@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Employee Dashboard</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- Add your custom CSS styles here if needed -->
+</head>
+
+<body>
+	<div class="container">
+		<h1 class="mt-5">Employee Dashboard</h1>
+		<div class="row mt-4">
+			<div class="col-md-8">
+				<!-- Add content and features specific to the employee's dashboard here -->
+				<p>Welcome, Employee! You can manage your tasks here.</p>
+
+				<!-- Example: List of tasks assigned to the employee -->
+				<h2>Your Tasks</h2>
+				<ul>
+					<li>Do Backend of Task Management System - <a href="#">Edit</a> | <a href="#">Delete</a> | <button
+							onclick="completeTask(this)">Complete</button></li>
+					<li>Task 2 - <a href="#">Edit</a> | <a href="#">Delete</a> | <button
+							onclick="completeTask(this)">Complete</button></li>
+					<!-- Add more tasks as needed -->
+					<li>Task 3 - <a href="#">Edit</a> | <a href="#">Delete</a> | <button
+							onclick="completeTask(this)">Complete</button></li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<!-- Add a sidebar or additional information as needed -->
+				<div class="card">
+					<div class="card-header">Employee Information</div>
+					<div class="card-body">
+						<p class="manager-info"><strong>Name:</strong> <span th:text="${employee.username}"></span></p>
+						<p class="manager-info"><strong>Email:</strong> <span th:text="${employee.email}"></span></p>
+						<!-- Add more employee information as needed -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function completeTask(button) {
+			// You can add JavaScript code here to handle task completion
+			alert("Task completed!");
+		}
+	</script>
+</body>
+
+</html>

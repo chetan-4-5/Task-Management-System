@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Manager Dashboard</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- Add your custom CSS styles here if needed -->
+	<style>
+		/* Custom Styles */
+		.welcome-text {
+			font-size: 1.2rem;
+			margin-bottom: 20px;
+		}
+
+		.list-item {
+			margin-bottom: 10px;
+			list-style-type: none;
+			border: 1px solid #ccc;
+			padding: 10px;
+			border-radius: 5px;
+			background-color: #f9f9f9;
+		}
+
+		.list-item a {
+			margin-left: 10px;
+			text-decoration: none;
+			color: #007BFF;
+			transition: color 0.3s;
+		}
+
+		.list-item a:hover {
+			color: #0056b3;
+		}
+
+		.assign-button {
+			background-color: #28a745;
+			color: #fff;
+			border: none;
+			padding: 5px 10px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.assign-button:hover {
+			background-color: #218838;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h1 class="mt-5">Manager Dashboard</h1>
+		<div class="row mt-4">
+			<div class="col-md-8">
+				<!-- Add content and features specific to the manager's dashboard here -->
+				<p class="welcome-text">Welcome, Manager! You can manage tasks and users here.</p>
+
+				<!-- List of employees -->
+				<h2>List of Employees</h2>
+				<ul>
+					<li class="list-item" th:each="employee : ${employees}">
+						<span th:text="${employee.username}"></span>
+						<a class="edit-button" href="#">Edit</a> | <form
+							th:action="@{'/manager/deleteEmployee/' + ${employee.id}}" method="post">
+							<button type="submit" class="delete-button">Delete Employee</button>
+						</form>
+
+					</li>
+				</ul>
+
+				<!-- List of tasks created by the manager -->
+				<h2>Tasks Created by Manager</h2>
+				<ul>
+					<li class="list-item" th:each="task : ${tasks}">
+						<span th:text="${task.title}"></span>
+						<span th:if="${task.assignedTo != null}"> - Assigned to <span
+								th:text="${task.assignedTo.username}"></span></span>
+						<span th:if="${task.assignedTo == null} and ${not #lists.isEmpty(task.title)}"> - Task not
+							assigned</span>
+						<div th:if="${task.assignedTo == null}">
+							<form th:action="@{'/manager/assignTask/' + ${task.id}}" method="post" id="assign-form">
+								<select name="employeeId">
+									<option value="">Select an employee</option>
+									<th:block th:each="employee : ${employees}">
+										<option th:value="${employee.id}" th:text="${employee.username}"></option>
+									</th:block>
+								</select>
+								<button type="submit" class="assign-button">Assign Task</button>
+							</form>
+
+						</div>
+					</li>
+				</ul>
+
+
+
+
+				<!-- Create Task Button -->
+				<a th:href="@{/manager/createTask}" class="btn btn-primary">Create Task</a>
+			</div>
+			<div class="col-md-4">
+				<!-- Display the manager's information here -->
+				<div class="card">
+					<div class="card-header">Manager Information</div>
+					<div class="card-body">
+						<p class="manager-info"><strong>Name:</strong> <span th:text="${manager.username}"></span></p>
+						<p class="manager-info"><strong>Email:</strong> <span th:text="${manager.email}"></span></p>
+						<!-- Add more manager information as needed -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.querySelectorAll(".assign-button").forEach(function (button) {
+			button.addEventListener("click", function (event) {
+				event.preventDefault(); // Prevent the default form submission behavior
+
+				const listItem = event.target.closest(".list-item");
+				const taskId = listItem.getAttribute("data-task-id");
+				const employeeSelect = listItem.querySelector("select");
+				const selectedEmployee = employeeSelect.options[employeeSelect.selectedIndex];
+
+				if (selectedEmployee && selectedEmployee.value) {
+					// Prepare data to send to the server for task assignment
+					const formData = new FormData();
+					formData.append("taskId", taskId);
+					formData.append("employeeId", selectedEmployee.value);
+
+					// Send a POST request to the server to assign the task
+					fetch("/manager/assignTask/" + taskId, {
+						method: "POST",
+						body: formData,
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							if (data.success) {
+								// Update the view to show the assigned employee
+								const assignedToSpan = listItem.querySelector(".assigned-to");
+								assignedToSpan.textContent = " - Assigned to " + selectedEmployee.text;
+
+								// Hide the assign form and button
+								listItem.querySelector(".assign-form").style.display = "none";
+							} else {
+								console.error("Assignment failed:", data.message);
+							}
+						})
+						.catch((error) => {
+							console.error("Error while assigning task:", error);
+						});
+				} else {
+					alert("Please select an employee.");
+				}
+			});
+		});
+	</script>
+
+
+
+
+
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

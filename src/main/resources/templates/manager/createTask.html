@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add your custom CSS styles here if needed -->
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Create Task</h1>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Task Details</div>
+                    <div class="card-body">
+                        <form th:action="@{/manager/createTask}" method="post">
+                            <div class="form-group">
+                                <label for="taskTitle">Task Title:</label>
+                                <input type="text" class="form-control" id="taskTitle" name="taskTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDescription">Task Description:</label>
+                                <textarea class="form-control" id="taskDescription" name="taskDescription" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
